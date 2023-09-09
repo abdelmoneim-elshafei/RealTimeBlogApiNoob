@@ -33,6 +33,7 @@ public class Post {
     private String content;
 
     @OneToMany(mappedBy = "post",cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private Set<Comment> comments = new HashSet<>();
     public boolean equals(Object o) {
         if (this == o) return true;

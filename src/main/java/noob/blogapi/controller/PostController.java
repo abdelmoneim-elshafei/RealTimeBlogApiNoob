@@ -1,5 +1,6 @@
 package noob.blogapi.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import noob.blogapi.payload.PostDto;
@@ -19,7 +20,7 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto){
+    public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto){
         return new ResponseEntity<PostDto>(postService.createPost(postDto), HttpStatus.CREATED);
     }
     @GetMapping
@@ -36,7 +37,7 @@ public class PostController {
        return ResponseEntity.ok(postService.getById(id));
     }
     @PutMapping("{id}")
-    public ResponseEntity<PostDto> updateById(@PathVariable Long id,@RequestBody PostDto postDto){
+    public ResponseEntity<PostDto> updateById(@PathVariable Long id, @Valid @RequestBody PostDto postDto){
         PostDto postDto1 = postService.updateById(id , postDto);
         return new ResponseEntity<PostDto>(postDto1,HttpStatus.OK);
     }

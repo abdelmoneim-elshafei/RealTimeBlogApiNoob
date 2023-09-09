@@ -3,12 +3,15 @@ package noob.blogapi.service.impl;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import noob.blogapi.entity.Comment;
 import noob.blogapi.entity.Post;
 import noob.blogapi.exception.ResourceNotFoundException;
+import noob.blogapi.payload.CommentDto;
 import noob.blogapi.payload.PostDto;
 import noob.blogapi.payload.PostResponse;
 import noob.blogapi.repository.PostRepository;
 import noob.blogapi.service.PostService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -25,6 +29,8 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
+    final ModelMapper mapper;
+    CommentServiceImpl commentService;
     @Override
     public PostDto createPost(PostDto postDto) {
         Post post = mapToEntity(postDto);
@@ -80,18 +86,21 @@ public class PostServiceImpl implements PostService {
     }
 
     private PostDto mapToDTO(Post newPost){
-        PostDto newPostDto = new PostDto();
+
+        /*PostDto newPostDto = new PostDto();
         newPostDto.setId(newPost.getId());
         newPostDto.setTitle(newPost.getTitle());
         newPostDto.setContent(newPost.getContent());
-        newPostDto.setDescription(newPost.getDescription());
-        return newPostDto;
+        newPostDto.setDescription(newPost.getDescription());*/
+        return mapper.map(newPost,PostDto.class);
     }
     private Post mapToEntity(PostDto postDto){
-        Post post = new Post();
+
+        /*Post post = new Post();
         post.setTitle(postDto.getTitle());
         post.setDescription(postDto.getDescription());
-        post.setContent(postDto.getContent());
-        return post ;
+        post.setContent(postDto.getContent());*/
+
+        return mapper.map(postDto,Post.class);
     }
 }
