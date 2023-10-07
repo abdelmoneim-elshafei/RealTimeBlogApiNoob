@@ -3,13 +3,16 @@ package noob.blogapi.controller;
 import lombok.RequiredArgsConstructor;
 import noob.blogapi.entity.Role;
 import noob.blogapi.entity.User;
+import noob.blogapi.payload.JwtAuthResponse;
 import noob.blogapi.payload.LoginDTO;
 import noob.blogapi.payload.SignUpDTO;
 import noob.blogapi.repository.RoleRepository;
 import noob.blogapi.repository.UserRepository;
+import noob.blogapi.security.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,14 +33,15 @@ public class AuthController {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider provider;
 
     @PostMapping("/signin")
-    public ResponseEntity<String> singIn(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<?> singIn(@RequestBody LoginDTO loginDTO) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginDTO.getUsername()
                 , loginDTO.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return new ResponseEntity<>("User signed-in successfuly. ", HttpStatus.OK);
+        String token = provider.generateToken(authentication);
+        return ResponseEntity.ok(new JwtAuthResponse(token));
     }
 
     @PostMapping("/signup")
